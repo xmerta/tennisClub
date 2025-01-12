@@ -3,9 +3,10 @@ package cz.xmerta.tennisclub.storage.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
-//@Table(name = "")
+@Table(name = "surface_types")
 public class SurfaceType extends BaseEntity {
 
     @Column(nullable = false, unique = true)
