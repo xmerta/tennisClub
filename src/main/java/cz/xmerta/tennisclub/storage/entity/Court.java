@@ -23,7 +23,6 @@ public class Court extends BaseEntity {
     @OneToMany(mappedBy = "", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
-    // Getters and Setters
     public String getName() {
         return name;
     }
