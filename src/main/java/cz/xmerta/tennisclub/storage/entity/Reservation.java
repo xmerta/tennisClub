@@ -7,15 +7,15 @@ import java.time.LocalDateTime;
 
 
 @Entity
-//@Table(name = "")
+@Table(name = "reservations")
 public class Reservation extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "", nullable = false)
+    @JoinColumn(name = "court_id", nullable = false)
     private Court court;
 
     @Column(nullable = false)
@@ -29,7 +29,7 @@ public class Reservation extends BaseEntity {
     private GameType gameType;
 
     @Column(nullable = false)
-    private int price;
+    private double price;
 
     public User getUser() {
         return user;
@@ -71,11 +71,11 @@ public class Reservation extends BaseEntity {
         this.gameType = gameType;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 }

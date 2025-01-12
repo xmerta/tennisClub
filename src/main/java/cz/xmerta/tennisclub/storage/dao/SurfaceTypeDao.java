@@ -17,9 +17,9 @@ public class SurfaceTypeDao implements DataAccessObject<SurfaceType> {
     @Override
     public SurfaceType save(SurfaceType surfaceType) {
         if (surfaceType.getId() == null) {
-            entityManager.persist(surfaceType); // New entity
+            entityManager.persist(surfaceType);
         } else {
-            surfaceType = entityManager.merge(surfaceType); // Update existing
+            surfaceType = entityManager.merge(surfaceType);
         }
         return surfaceType;
     }

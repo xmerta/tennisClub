@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-//@Table(name = "")
+@Table(name = "users")
 public class User extends BaseEntity {
 
     @Column(nullable = false, unique = true)
@@ -13,7 +13,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // to be deleted mby
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
     public String getPhoneNumber() {

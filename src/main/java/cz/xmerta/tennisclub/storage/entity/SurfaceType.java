@@ -3,7 +3,6 @@ package cz.xmerta.tennisclub.storage.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 
 @Entity
 //@Table(name = "")
@@ -13,7 +12,7 @@ public class SurfaceType extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private double priceMultiplier;
+    private double pricePerMinute;
 
     public String getName() {
         return name;
@@ -23,11 +22,11 @@ public class SurfaceType extends BaseEntity {
         this.name = name;
     }
 
-    public double getPriceMultiplier() {
-        return priceMultiplier;
+    public double getPricePerMinute() {
+        return pricePerMinute;
     }
 
-    public void setPriceMultiplier(double priceMultiplier) {
-        this.priceMultiplier = priceMultiplier;
+    public void setPricePerMinute(double priceMultiplier) {
+        this.pricePerMinute = priceMultiplier;
     }
 }
