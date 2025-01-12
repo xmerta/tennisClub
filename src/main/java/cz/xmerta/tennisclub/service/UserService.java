@@ -1,7 +1,7 @@
 package cz.xmerta.tennisclub.service;
 
 import cz.xmerta.tennisclub.storage.dao.UserDao;
-import cz.xmerta.tennisclub.storage.entity.User;
+import cz.xmerta.tennisclub.storage.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

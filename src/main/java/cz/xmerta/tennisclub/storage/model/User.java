@@ -1,4 +1,4 @@
-package cz.xmerta.tennisclub.storage.entity;
+package cz.xmerta.tennisclub.storage.model;
 
 import jakarta.persistence.*;
 import java.util.List;

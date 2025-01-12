@@ -1,6 +1,6 @@
 package cz.xmerta.tennisclub.storage.dao;
 
-import cz.xmerta.tennisclub.storage.entity.SurfaceType;
+import cz.xmerta.tennisclub.storage.model.SurfaceType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;

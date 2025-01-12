@@ -1,14 +1,20 @@
-package cz.xmerta.tennisclub.storage.entity;
+package cz.xmerta.tennisclub.storage.model;
+
 
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 
 @Entity
 @Table(name = "surface_types")
 public class SurfaceType extends BaseEntity {
 
+    @NotBlank(message = "Name cannot be blank.")
+    @Size(min = 3, max = 255, message = "Name must be between 3 and 50 characters.")
     @Column(nullable = false, unique = true)
     private String name;
 

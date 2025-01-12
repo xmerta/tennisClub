@@ -1,6 +1,6 @@
 package cz.xmerta.tennisclub.service;
 
-import cz.xmerta.tennisclub.storage.entity.SurfaceType;
+import cz.xmerta.tennisclub.storage.model.SurfaceType;
 import cz.xmerta.tennisclub.storage.dao.SurfaceTypeDao;
 import org.springframework.stereotype.Service;
 
