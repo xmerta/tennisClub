@@ -1,7 +1,5 @@
 package cz.xmerta.tennisclub.controller;
 
-
-
 import cz.xmerta.tennisclub.service.SurfaceTypeService;
 import cz.xmerta.tennisclub.storage.model.SurfaceType;
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/surfacetypes")
-public class SurfaceTypeController {
+public class SurfaceTypeController implements CrudController<SurfaceType> {
 
     private final SurfaceTypeService surfaceTypeService;
 
@@ -21,30 +19,32 @@ public class SurfaceTypeController {
         this.surfaceTypeService = surfaceTypeService;
     }
 
+    @Override
     @GetMapping
-    public ResponseEntity<Collection<SurfaceType>> getAllSurfaceTypes() {
+    public ResponseEntity<Collection<SurfaceType>> getAll() {
         Collection<SurfaceType> surfaceTypes = surfaceTypeService.findAll();
         return ResponseEntity.ok(surfaceTypes);
     }
 
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<SurfaceType> getSurfaceTypeById(@PathVariable long id) {
+    public ResponseEntity<SurfaceType> getById(@PathVariable long id) {
         Optional<SurfaceType> surfaceType = surfaceTypeService.findById(id);
         return surfaceType
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    @Override
     @PostMapping
-    public ResponseEntity<SurfaceType> createSurfaceType(SurfaceType surfaceType) {
+    public ResponseEntity<SurfaceType> create(@RequestBody SurfaceType surfaceType) {
         SurfaceType createdSurfaceType = surfaceTypeService.save(surfaceType);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSurfaceType);
     }
 
+    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SurfaceType> updateSurfaceType(
-            @PathVariable long id,
-            @RequestBody SurfaceType updatedSurfaceType) {
+    public ResponseEntity<SurfaceType> update(@PathVariable long id, @RequestBody SurfaceType updatedSurfaceType) {
         Optional<SurfaceType> existingSurfaceType = surfaceTypeService.findById(id);
         if (existingSurfaceType.isPresent()) {
             updatedSurfaceType.setId(id);
@@ -55,8 +55,9 @@ public class SurfaceTypeController {
         }
     }
 
+    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSurfaceType(@PathVariable long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable long id) {
         Optional<SurfaceType> surfaceType = surfaceTypeService.findById(id);
         if (surfaceType.isPresent()) {
             surfaceTypeService.deleteById(id);
@@ -66,10 +67,10 @@ public class SurfaceTypeController {
         }
     }
 
+    @Override
     @DeleteMapping
-    public ResponseEntity<Void> deleteAllSurfaceTypes() {
+    public ResponseEntity<Void> deleteAll() {
         surfaceTypeService.deleteAll();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
-
