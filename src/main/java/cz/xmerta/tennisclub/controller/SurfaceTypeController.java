@@ -32,7 +32,7 @@ public class SurfaceTypeController {
         Optional<SurfaceType> surfaceType = surfaceTypeService.findById(id);
         return surfaceType
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @PostMapping
