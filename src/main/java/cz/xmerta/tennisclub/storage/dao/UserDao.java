@@ -46,6 +46,11 @@ public class UserDao implements DataAccessObject<User> {
         entityManager.createQuery("DELETE FROM User").executeUpdate();
     }
 
+    /**
+     * Added for optimalization.
+     * @param phoneNumber
+     * @return
+     */
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         List<User> result = entityManager.createQuery(
                         "SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber", User.class)

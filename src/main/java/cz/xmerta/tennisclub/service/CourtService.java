@@ -11,13 +11,18 @@ import java.util.Optional;
 public class CourtService implements CrudService<Court> {
 
     private final CourtDao courtDao;
+    private final SurfaceTypeService  surfaceTypeService;
 
-    public CourtService(CourtDao courtDao) {
+    public CourtService(CourtDao courtDao, SurfaceTypeService surfaceTypeService) {
         this.courtDao = courtDao;
+        this.surfaceTypeService = surfaceTypeService;
     }
 
     @Override
     public Court save(Court court) {
+        if (surfaceTypeService.findById(court.getSurfaceType().getId()).isEmpty()) {
+            throw new IllegalArgumentException("Invalid SurfaceType ID: " + court.getSurfaceType().getId());
+        }
         return courtDao.save(court);
     }
 

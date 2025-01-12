@@ -1,6 +1,9 @@
 package cz.xmerta.tennisclub.storage.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 import java.util.List;
@@ -9,9 +12,12 @@ import java.util.List;
 @Table(name = "courts")
 public class Court extends BaseEntity {
 
+    @NotBlank(message = "Name cannot be blank.")
+    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters.")
     @Column(nullable = false, unique = true)
     private String name;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "surface_type_id", nullable = false)
     private SurfaceType surfaceType;

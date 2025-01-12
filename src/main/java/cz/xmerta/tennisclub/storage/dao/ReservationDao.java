@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +17,9 @@ public class ReservationDao implements DataAccessObject<Reservation> {
     @Override
     public Reservation save(Reservation reservation) {
         if (reservation.getId() == null) {
-            entityManager.persist(reservation); // New entity
+            entityManager.persist(reservation);
         } else {
-            reservation = entityManager.merge(reservation); // Update existing
+            reservation = entityManager.merge(reservation);
         }
         return reservation;
     }
@@ -57,24 +56,6 @@ public class ReservationDao implements DataAccessObject<Reservation> {
         return entityManager.createQuery(
                         "SELECT r FROM Reservation r WHERE r.user.id = :userId", Reservation.class)
                 .setParameter("userId", userId)
-                .getResultList();
-    }
-
-    public List<Reservation> findOverlappingReservations(Long courtId, LocalDateTime startTime, LocalDateTime endTime) {
-        return entityManager.createQuery(
-                        "SELECT r FROM Reservation r WHERE r.court.id = :courtId AND " +
-                                "(r.startTime < :endTime AND r.endTime > :startTime)", Reservation.class)
-                .setParameter("courtId", courtId)
-                .setParameter("startTime", startTime)
-                .setParameter("endTime", endTime)
-                .getResultList();
-    }
-
-    public List<Reservation> findUpcomingByUserId(Long userId, LocalDateTime now) {
-        return entityManager.createQuery(
-                        "SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.startTime > :now", Reservation.class)
-                .setParameter("userId", userId)
-                .setParameter("now", now)
                 .getResultList();
     }
 }

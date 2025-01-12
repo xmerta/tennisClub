@@ -41,7 +41,6 @@ public class UserService implements CrudService<User> {
         userDao.deleteAll();
     }
 
-    // to be deleted mby
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return userDao.findByPhoneNumber(phoneNumber);
     }

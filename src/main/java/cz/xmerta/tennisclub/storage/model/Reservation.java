@@ -2,6 +2,7 @@ package cz.xmerta.tennisclub.storage.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class Reservation extends BaseEntity {
     @Column(nullable = false)
     private GameType gameType;
 
+    @Positive
     @Column(nullable = false)
     private double price;
 

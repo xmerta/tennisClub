@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 
@@ -14,10 +15,11 @@ import jakarta.validation.constraints.Size;
 public class SurfaceType extends BaseEntity {
 
     @NotBlank(message = "Name cannot be blank.")
-    @Size(min = 3, max = 255, message = "Name must be between 3 and 50 characters.")
+    @Size(min = 3, max = 255, message = "Name must be between 3 and 255 characters.")
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Positive(message = "Price per minute must be a positive value.")
     @Column(nullable = false)
     private double pricePerMinute;
 
