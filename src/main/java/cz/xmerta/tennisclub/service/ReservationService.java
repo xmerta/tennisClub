@@ -7,6 +7,8 @@ import cz.xmerta.tennisclub.storage.model.Reservation;
 import cz.xmerta.tennisclub.storage.model.User;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.Validator;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collection;

@@ -28,27 +28,25 @@ public class ReservationController {
     public ResponseEntity<Reservation> getReservationById(@PathVariable long id) {
         return reservationService.findById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
         if (reservationService.findById(id).isPresent()) {
             reservationService.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping
     public ResponseEntity<Double> createReservation(
             @Valid @RequestBody Reservation reservation) {
-        try {
-            double price = reservationService.save(reservation).getPrice();
-            return ResponseEntity.status(HttpStatus.CREATED).body(price);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+
+        double price = reservationService.save(reservation).getPrice();
+        return ResponseEntity.status(HttpStatus.CREATED).body(price);
+
     }
 
     @GetMapping("/court/{courtId}")
@@ -60,14 +58,12 @@ public class ReservationController {
     public ResponseEntity<Collection<Reservation>> getReservationsByUser(
             @PathVariable String phoneNumber,
             @RequestParam(required = false, defaultValue = "false") boolean includePast) {
-        try {
-            Collection<Reservation> reservations = !includePast
-                    ? reservationService.getUpcomingReservationsByUser(phoneNumber)
-                    : reservationService.getReservationsByUser(phoneNumber);
-            return ResponseEntity.ok(reservations);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+
+        Collection<Reservation> reservations = !includePast
+                ? reservationService.getUpcomingReservationsByUser(phoneNumber)
+                : reservationService.getReservationsByUser(phoneNumber);
+        return ResponseEntity.ok(reservations);
+
     }
 }
 
