@@ -2,12 +2,14 @@ package cz.xmerta.tennisclub.service;
 
 import cz.xmerta.tennisclub.storage.dao.UserDao;
 import cz.xmerta.tennisclub.storage.model.User;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService implements CrudService<User> {
 
     private final UserDao userDao;

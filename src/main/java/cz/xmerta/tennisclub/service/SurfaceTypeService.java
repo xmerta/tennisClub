@@ -2,12 +2,14 @@ package cz.xmerta.tennisclub.service;
 
 import cz.xmerta.tennisclub.storage.model.SurfaceType;
 import cz.xmerta.tennisclub.storage.dao.SurfaceTypeDao;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class SurfaceTypeService implements CrudService<SurfaceType> {
 
     private final SurfaceTypeDao surfaceTypeDao;

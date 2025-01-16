@@ -15,7 +15,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An unexpected error occurred.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An unexpected error occurred:" + e.getMessage());
     }
 }
 

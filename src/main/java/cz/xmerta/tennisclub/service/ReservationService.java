@@ -5,9 +5,9 @@ import cz.xmerta.tennisclub.storage.model.Court;
 import cz.xmerta.tennisclub.storage.model.GameType;
 import cz.xmerta.tennisclub.storage.model.Reservation;
 import cz.xmerta.tennisclub.storage.model.User;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.Validator;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ReservationService implements CrudService<Reservation> {
 
     private final ReservationDao reservationDao;
