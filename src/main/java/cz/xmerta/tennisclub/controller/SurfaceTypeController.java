@@ -2,6 +2,7 @@ package cz.xmerta.tennisclub.controller;
 
 import cz.xmerta.tennisclub.service.SurfaceTypeService;
 import cz.xmerta.tennisclub.storage.model.SurfaceType;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,14 +38,14 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
 
     @Override
     @PostMapping
-    public ResponseEntity<SurfaceType> create(@RequestBody SurfaceType surfaceType) {
+    public ResponseEntity<SurfaceType> create(@RequestBody @Valid SurfaceType surfaceType) {
         SurfaceType createdSurfaceType = surfaceTypeService.save(surfaceType);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSurfaceType);
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<SurfaceType> update(@PathVariable long id, @RequestBody SurfaceType updatedSurfaceType) {
+    public ResponseEntity<SurfaceType> update(@PathVariable long id, @RequestBody @Valid SurfaceType updatedSurfaceType) {
         Optional<SurfaceType> existingSurfaceType = surfaceTypeService.findById(id);
         if (existingSurfaceType.isPresent()) {
             updatedSurfaceType.setId(id);

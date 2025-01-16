@@ -28,13 +28,13 @@ class CourtControllerTest {
 
     private Court court1;
     private Court court2;
-    private SurfaceType surfaceType1;
+    private Court updatedCourt1;
 
     @BeforeEach
     void setUp() {
-        surfaceType1 = new SurfaceType();
+        SurfaceType surfaceType1 = new SurfaceType();
         surfaceType1.setId(1L);
-        surfaceType1.setName("Clay");
+        surfaceType1.setName("Bricks");
         surfaceType1.setPricePerMinute(0.5);
 
         court1 = new Court();
@@ -47,6 +47,10 @@ class CourtControllerTest {
         court2.setName("Court 2");
         court2.setSurfaceType(surfaceType1);
 
+        updatedCourt1 = new Court();
+        updatedCourt1.setId(1L);
+        updatedCourt1.setName("Updated Court");
+        updatedCourt1.setSurfaceType(surfaceType1);
     }
 
     @Test
@@ -104,16 +108,28 @@ class CourtControllerTest {
     }
 
     @Test
+    void create_NotOK() throws Exception {
+        when(courtService.save(any(Court.class))).thenReturn(court1);
+
+        mockMvc.perform(post("/api/courts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\": \"C\", \"surfaceType\": {\"id\": 1}}"))
+                .andExpect(status().isBadRequest());
+
+        verify(courtService, times(0)).save(any(Court.class));
+    }
+
+    @Test
     void update_WhenExists() throws Exception {
         when(courtService.findById(1L)).thenReturn(Optional.of(court1));
-        when(courtService.save(any(Court.class))).thenReturn(court1);
+        when(courtService.save(any(Court.class))).thenReturn(updatedCourt1);
 
         mockMvc.perform(put("/api/courts/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\": 1, \"name\": \"Updated Court\", \"surfaceType\": {\"id\": 1}}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Court 1"));
+                .andExpect(jsonPath("$.name").value("Updated Court"));
 
         verify(courtService, times(1)).findById(1L);
         verify(courtService, times(1)).save(any(Court.class));
