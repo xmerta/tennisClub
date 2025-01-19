@@ -26,35 +26,43 @@ public class ReservationDao implements DataAccessObject<Reservation> {
 
     @Override
     public Optional<Reservation> findById(Long id) {
-        Reservation reservation = entityManager.find(Reservation.class, id);
-        return Optional.ofNullable(reservation);
+        return entityManager.createQuery(
+                        "SELECT r FROM Reservation r WHERE r.id = :id AND r.isDeleted = false", Reservation.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public List<Reservation> findAll() {
-        return entityManager.createQuery("SELECT r FROM Reservation r", Reservation.class).getResultList();
+        return entityManager.createQuery(
+                        "SELECT r FROM Reservation r WHERE r.isDeleted = false", Reservation.class)
+                .getResultList();
     }
 
     @Override
     public void deleteById(Long id) {
-        findById(id).ifPresent(entityManager::remove);
+        entityManager.createQuery("UPDATE Reservation r SET r.isDeleted = true WHERE r.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
     @Override
     public void deleteAll() {
-        entityManager.createQuery("DELETE FROM Reservation").executeUpdate();
+        entityManager.createQuery("UPDATE Reservation r SET r.isDeleted = true")
+                .executeUpdate();
     }
 
     public List<Reservation> findByCourtId(Long courtId) {
         return entityManager.createQuery(
-                        "SELECT r FROM Reservation r WHERE r.court.id = :courtId", Reservation.class)
+                        "SELECT r FROM Reservation r WHERE r.court.id = :courtId AND r.isDeleted = false", Reservation.class)
                 .setParameter("courtId", courtId)
                 .getResultList();
     }
 
     public List<Reservation> findByUserId(Long userId) {
         return entityManager.createQuery(
-                        "SELECT r FROM Reservation r WHERE r.user.id = :userId", Reservation.class)
+                        "SELECT r FROM Reservation r WHERE r.user.id = :userId AND r.isDeleted = false", Reservation.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }

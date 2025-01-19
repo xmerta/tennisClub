@@ -26,22 +26,28 @@ public class SurfaceTypeDao implements DataAccessObject<SurfaceType> {
 
     @Override
     public Collection<SurfaceType> findAll() {
-        return entityManager.createQuery("SELECT s FROM SurfaceType s", SurfaceType.class).getResultList();
+        return entityManager.createQuery("SELECT s FROM SurfaceType s WHERE s.isDeleted = false", SurfaceType.class)
+                .getResultList();
     }
 
     @Override
     public Optional<SurfaceType> findById(Long id) {
-        SurfaceType surfaceType = entityManager.find(SurfaceType.class, id);
-        return Optional.ofNullable(surfaceType);
+        return entityManager.createQuery("SELECT s FROM SurfaceType s WHERE s.id = :id AND s.isDeleted = false", SurfaceType.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public void deleteById(Long id) {
-        findById(id).ifPresent(entityManager::remove);
+        entityManager.createQuery("UPDATE SurfaceType s SET s.isDeleted = true WHERE s.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
     @Override
     public void deleteAll() {
-        entityManager.createQuery("DELETE FROM SurfaceType").executeUpdate();
+        entityManager.createQuery("UPDATE SurfaceType s SET s.isDeleted = true")
+                .executeUpdate();
     }
 }

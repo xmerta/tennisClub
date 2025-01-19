@@ -25,22 +25,28 @@ public class CourtDao implements DataAccessObject<Court> {
 
     @Override
     public Collection<Court> findAll() {
-        return entityManager.createQuery("SELECT c FROM Court c", Court.class).getResultList();
+        return entityManager.createQuery("SELECT c FROM Court c WHERE c.isDeleted = false", Court.class)
+                .getResultList();
     }
 
     @Override
     public Optional<Court> findById(Long id) {
-        Court court = entityManager.find(Court.class, id);
-        return Optional.ofNullable(court);
+        return entityManager.createQuery("SELECT c FROM Court c WHERE c.id = :id AND c.isDeleted = false", Court.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public void deleteById(Long id) {
-        findById(id).ifPresent(entityManager::remove);
+        entityManager.createQuery("UPDATE Court c SET c.isDeleted = true WHERE c.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
     @Override
     public void deleteAll() {
-        entityManager.createQuery("DELETE FROM Court").executeUpdate();
+        entityManager.createQuery("UPDATE Court c SET c.isDeleted = true")
+                .executeUpdate();
     }
 }

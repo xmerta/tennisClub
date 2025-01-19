@@ -27,33 +27,36 @@ public class UserDao implements DataAccessObject<User> {
 
     @Override
     public Collection<User> findAll() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        return entityManager.createQuery(
+                        "SELECT u FROM User u WHERE u.isDeleted = false", User.class)
+                .getResultList();
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        User user = entityManager.find(User.class, id);
-        return Optional.ofNullable(user);
+        return entityManager.createQuery(
+                        "SELECT u FROM User u WHERE u.id = :id AND u.isDeleted = false", User.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public void deleteById(Long id) {
-        findById(id).ifPresent(entityManager::remove);
+        entityManager.createQuery("UPDATE User u SET u.isDeleted = true WHERE u.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
     @Override
     public void deleteAll() {
-        entityManager.createQuery("DELETE FROM User").executeUpdate();
+        entityManager.createQuery("UPDATE User u SET u.isDeleted = true")
+                .executeUpdate();
     }
 
-    /**
-     * Added for optimalization.
-     * @param phoneNumber
-     * @return
-     */
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         List<User> result = entityManager.createQuery(
-                        "SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber", User.class)
+                        "SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber AND u.isDeleted = false", User.class)
                 .setParameter("phoneNumber", phoneNumber)
                 .getResultList();
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
