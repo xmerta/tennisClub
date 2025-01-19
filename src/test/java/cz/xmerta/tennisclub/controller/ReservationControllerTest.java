@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -204,5 +205,51 @@ class ReservationControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(reservationService, times(1)).deleteAll();
+    }
+
+    @Test
+    void getReservationsByCourt() throws Exception {
+        when(reservationService.getReservationsByCourt(1L)).thenReturn(Arrays.asList(reservation1, reservation2));
+
+        mockMvc.perform(get("/api/reservations/court/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].price").value(30.0))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].price").value(25.0));
+
+        verify(reservationService, times(1)).getReservationsByCourt(1L);
+    }
+
+    @Test
+    void getReservationsByUser_Ok() throws Exception {
+        when(reservationService.getUpcomingReservationsByUser("+420123456789"))
+                .thenReturn(Arrays.asList(reservation1, reservation2));
+
+        mockMvc.perform(get("/api/reservations/user/+420123456789")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].price").value(30.0))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].price").value(25.0));
+
+        verify(reservationService, times(1)).getUpcomingReservationsByUser("+420123456789");
+    }
+
+    @Test
+    void getReservationsByUser_UserNotFound() throws Exception {
+        when(reservationService.getUpcomingReservationsByUser("+420123456789"))
+                .thenThrow(new IllegalArgumentException("User with phone number +420123456789 not found."));
+
+        mockMvc.perform(get("/api/reservations/user/+420123456789")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("User with phone number +420123456789 not found."));
+
+        verify(reservationService, times(1)).getUpcomingReservationsByUser("+420123456789");
     }
 }
