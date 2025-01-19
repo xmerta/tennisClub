@@ -40,13 +40,32 @@ public class ReservationController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllReservations() {
+        reservationService.deleteAll();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping
     public ResponseEntity<Double> createReservation(
             @Valid @RequestBody Reservation reservation) {
 
         double price = reservationService.save(reservation).getPrice();
         return ResponseEntity.status(HttpStatus.CREATED).body(price);
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Double> updateReservation(
+            @PathVariable long id,
+            @Valid @RequestBody Reservation updatedReservation) {
+
+        return reservationService.findById(id)
+                .map(existingReservation -> {
+                    updatedReservation.setId(existingReservation.getId());
+                    var price = reservationService.save(updatedReservation).getPrice();
+                    return ResponseEntity.ok(price);
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/court/{courtId}")
@@ -57,9 +76,9 @@ public class ReservationController {
     @GetMapping("/user/{phoneNumber}")
     public ResponseEntity<Collection<Reservation>> getReservationsByUser(
             @PathVariable String phoneNumber,
-            @RequestParam(required = false, defaultValue = "false") boolean includePast) {
+            @RequestParam(required = false, defaultValue = "false") boolean pastReservations) {
 
-        Collection<Reservation> reservations = !includePast
+        Collection<Reservation> reservations = !pastReservations
                 ? reservationService.getUpcomingReservationsByUser(phoneNumber)
                 : reservationService.getReservationsByUser(phoneNumber);
         return ResponseEntity.ok(reservations);

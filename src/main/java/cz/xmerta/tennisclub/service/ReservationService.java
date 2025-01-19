@@ -49,7 +49,7 @@ public class ReservationService implements CrudService<Reservation> {
     /**
      *
      * @param reservation
-     * Might require specialized Database query for optimization in the future.
+     *
      */
     private void validateReservation(Reservation reservation) {
         Collection<Reservation> allReservations = reservationDao.findAll();
