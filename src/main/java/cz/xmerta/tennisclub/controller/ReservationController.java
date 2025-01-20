@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -49,6 +50,9 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Double> createReservation(
             @Valid @RequestBody Reservation reservation) {
+        if (reservation.getId() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         double price = reservationService.save(reservation).getPrice();
         return ResponseEntity.status(HttpStatus.CREATED).body(price);
@@ -58,14 +62,19 @@ public class ReservationController {
     public ResponseEntity<Double> updateReservation(
             @PathVariable long id,
             @Valid @RequestBody Reservation updatedReservation) {
+        if (updatedReservation.getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
-        return reservationService.findById(id)
-                .map(existingReservation -> {
-                    updatedReservation.setId(existingReservation.getId());
-                    var price = reservationService.save(updatedReservation).getPrice();
-                    return ResponseEntity.ok(price);
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        Optional<Reservation> existingReservation = reservationService.findById(id);
+
+        if (existingReservation.isPresent()) {
+            updatedReservation.setId(existingReservation.get().getId());
+            double price = reservationService.save(updatedReservation).getPrice();
+            return ResponseEntity.ok(price);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("/court/{courtId}")

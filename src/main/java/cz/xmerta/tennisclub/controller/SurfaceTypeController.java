@@ -39,6 +39,10 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
     @Override
     @PostMapping
     public ResponseEntity<SurfaceType> create(@RequestBody @Valid SurfaceType surfaceType) {
+        if (surfaceType.getId() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         SurfaceType createdSurfaceType = surfaceTypeService.save(surfaceType);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSurfaceType);
     }
@@ -46,6 +50,10 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<SurfaceType> update(@PathVariable long id, @RequestBody @Valid SurfaceType updatedSurfaceType) {
+        if (updatedSurfaceType.getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Optional<SurfaceType> existingSurfaceType = surfaceTypeService.findById(id);
         if (existingSurfaceType.isPresent()) {
             updatedSurfaceType.setId(id);

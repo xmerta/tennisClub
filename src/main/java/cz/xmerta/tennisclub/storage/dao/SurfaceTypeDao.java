@@ -54,4 +54,17 @@ public class SurfaceTypeDao implements DataAccessObject<SurfaceType> {
         entityManager.createQuery("UPDATE SurfaceType s SET s.isDeleted = true")
                 .executeUpdate();
     }
+
+    /**
+     * Added for optimalization.
+     * @param name
+     * @return
+     */
+    public Optional<SurfaceType> findByName(String name) {
+        return entityManager.createQuery(
+                        "SELECT s FROM SurfaceType s WHERE s.name = :name AND s.isDeleted = false", SurfaceType.class)
+                .setParameter("name", name)
+                .getResultStream()
+                .findFirst();
+    }
 }

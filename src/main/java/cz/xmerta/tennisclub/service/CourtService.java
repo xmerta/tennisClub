@@ -25,7 +25,16 @@ public class CourtService implements CrudService<Court> {
         if (surfaceTypeService.findById(court.getSurfaceType().getId()).isEmpty()) {
             throw new IllegalArgumentException("Invalid SurfaceType ID: " + court.getSurfaceType().getId());
         }
+        validateUniqueName(court);
+
         return courtDao.save(court);
+    }
+
+    private void validateUniqueName(Court court) {
+        Optional<Court> existingCourt = courtDao.findByName(court.getName());
+        if (existingCourt.isPresent() && !existingCourt.get().getId().equals(court.getId())) {
+            throw new IllegalArgumentException("Court name must be unique: " + court.getName());
+        }
     }
 
     @Override

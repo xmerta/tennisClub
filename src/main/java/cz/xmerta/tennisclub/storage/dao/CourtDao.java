@@ -41,6 +41,14 @@ public class CourtDao implements DataAccessObject<Court> {
                 .findFirst();
     }
 
+    public Optional<Court> findByName(String name) {
+        return entityManager.createQuery(
+                        "SELECT c FROM Court c WHERE c.name = :name AND c.isDeleted = false", Court.class)
+                .setParameter("name", name)
+                .getResultStream()
+                .findFirst();
+    }
+
     @Override
     public void deleteById(Long id) {
         entityManager.createQuery("UPDATE Court c SET c.isDeleted = true WHERE c.id = :id")

@@ -20,7 +20,15 @@ public class UserService implements CrudService<User> {
 
     @Override
     public User save(User user) {
+        validateUniquePhoneNumber(user);
         return userDao.save(user);
+    }
+
+    private void validateUniquePhoneNumber(User user) {
+        Optional<User> existingUser = userDao.findByPhoneNumber(user.getPhoneNumber());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Phone number must be unique: " + user.getPhoneNumber());
+        }
     }
 
     @Override

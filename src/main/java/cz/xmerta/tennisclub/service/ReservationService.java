@@ -34,7 +34,7 @@ public class ReservationService implements CrudService<Reservation> {
     public Reservation save(Reservation reservation) {
         validateCourtExists(reservation);
         ensureUserExists(reservation);
-        validateReservation(reservation);
+        validateReservationTime(reservation);
         reservation.setPrice(calculatePrice(reservation));
         return reservationDao.save(reservation);
     }
@@ -51,7 +51,7 @@ public class ReservationService implements CrudService<Reservation> {
      * @param reservation
      *
      */
-    private void validateReservation(Reservation reservation) {
+    private void validateReservationTime(Reservation reservation) {
         Collection<Reservation> allReservations = reservationDao.findAll();
 
         boolean overlaps = allReservations.stream()

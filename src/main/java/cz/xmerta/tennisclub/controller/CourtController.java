@@ -39,6 +39,10 @@ public class CourtController implements CrudController<Court> {
     @Override
     @PostMapping
     public ResponseEntity<Court> create(@Valid @RequestBody Court court) {
+        if (court.getId() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Court createdCourt = courtService.save(court);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourt);
     }
@@ -48,6 +52,10 @@ public class CourtController implements CrudController<Court> {
     public ResponseEntity<Court> update(
             @PathVariable long id,
             @Valid @RequestBody Court updatedCourt) {
+        if (updatedCourt.getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Optional<Court> existingCourt = courtService.findById(id);
         if (existingCourt.isPresent()) {
             Court savedCourt = courtService.save(updatedCourt);
