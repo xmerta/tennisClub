@@ -115,7 +115,7 @@ class ReservationControllerTest {
 
         mockMvc.perform(post("/api/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1, \"court\": {\"id\": 1, \"name\": \"Court 1\", \"surfaceType\": {\"id\": 1, \"name\": \"Clay\", \"pricePerMinute\": 0.5}}, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 30.0, \"gameType\": \"SINGLE\"}"))
+                        .content("{\"id\": null, \"court\": {\"id\": 1, \"name\": \"Court 1\", \"surfaceType\": {\"id\": 1, \"name\": \"Clay\", \"pricePerMinute\": 0.5}}, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 30.0, \"gameType\": \"SINGLE\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(30.0));
 
