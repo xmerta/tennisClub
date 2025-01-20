@@ -26,6 +26,17 @@ public class Court extends BaseEntity {
     @OneToMany(mappedBy = "court", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
+    /**
+     * No-argument constructor for Hibernate.
+     */
+    protected Court() {}
+
+    public Court(Long id, String name, SurfaceType surfaceType) {
+        this.setId(id);
+        this.name = name;
+        this.surfaceType = surfaceType;
+    }
+
     public String getName() {
         return name;
     }

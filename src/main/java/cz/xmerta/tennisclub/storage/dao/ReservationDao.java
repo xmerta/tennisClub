@@ -14,6 +14,10 @@ public class ReservationDao implements DataAccessObject<Reservation> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public ReservationDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public Reservation save(Reservation reservation) {
         if (reservation.getId() == null) {

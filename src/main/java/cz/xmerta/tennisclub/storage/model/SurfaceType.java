@@ -24,6 +24,14 @@ public class SurfaceType extends BaseEntity {
     @Column(nullable = false)
     private double pricePerMinute;
 
+    protected SurfaceType() {}
+
+    public SurfaceType(Long id, String name, double pricePerMinute) {
+        this.setId(id);
+        this.name = name;
+        this.pricePerMinute = pricePerMinute;
+    }
+
     public String getName() {
         return name;
     }

@@ -13,6 +13,10 @@ public class CourtDao implements DataAccessObject<Court> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public CourtDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public Court save(Court court) {
         if (court.getId() == null) {

@@ -32,20 +32,9 @@ class SurfaceTypeControllerTest {
 
     @BeforeEach
     void setUp() {
-        surfaceType1 = new SurfaceType();
-        surfaceType1.setId(1L);
-        surfaceType1.setName("Clay");
-        surfaceType1.setPricePerMinute(0.5);
-
-        surfaceType2 = new SurfaceType();
-        surfaceType2.setId(2L);
-        surfaceType2.setName("Grass");
-        surfaceType2.setPricePerMinute(0.8);
-
-        updatedSurfaceType1 = new SurfaceType();
-        updatedSurfaceType1.setId(1L);
-        updatedSurfaceType1.setName("Updated Clay");
-        updatedSurfaceType1.setPricePerMinute(0.5);
+        surfaceType1 = new SurfaceType(1L, "Clay", 0.5);
+        surfaceType2 = new SurfaceType(2L, "Grass", 0.8);
+        updatedSurfaceType1 = new SurfaceType(1L, "Updated Clay", 0.5);
     }
 
     @Test

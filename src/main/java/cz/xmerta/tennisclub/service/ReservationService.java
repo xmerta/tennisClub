@@ -76,9 +76,9 @@ public class ReservationService implements CrudService<Reservation> {
     private void ensureUserExists(Reservation reservation) {
         Optional<User> user = userService.findByPhoneNumber(reservation.getUser().getPhoneNumber());
         if (user.isEmpty()) {
-            User newUser = new User();
-            newUser.setName(reservation.getUser().getName());
-            newUser.setPhoneNumber(reservation.getUser().getPhoneNumber());
+            User newUser = new User(null,
+                    reservation.getUser().getPhoneNumber(),
+                    reservation.getUser().getName());
             User createdUser = userService.save(newUser);
             reservation.setUser(createdUser);
         } else {

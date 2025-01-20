@@ -27,6 +27,17 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
+    /**
+     *  For Hibernate purposes.
+     */
+    protected User() {}
+
+    public User(Long id, String phoneNumber, String name) {
+        this.setId(id);
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

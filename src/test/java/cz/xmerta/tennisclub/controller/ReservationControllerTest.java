@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -34,20 +33,10 @@ class ReservationControllerTest {
 
     @BeforeEach
     void setUp() {
-        var validSurfaceType = new SurfaceType();
-        validSurfaceType.setId(1L);
-        validSurfaceType.setName("Clay");
-        validSurfaceType.setPricePerMinute(0.5);
+        SurfaceType validSurfaceType = new SurfaceType(1L, "Clay", 0.5);
 
-        Court court = new Court();
-        court.setId(1L);
-        court.setName("Court 1");
-        court.setSurfaceType(validSurfaceType);
-
-        User user = new User();
-        user.setId(1L);
-        user.setName("John Doe");
-        user.setPhoneNumber("123456789");
+        Court court = new Court(1L, "Court 1", validSurfaceType);
+        User user = new User(1L, "+420123456789", "John Doe");
 
         reservation1 = new Reservation(
                 1L,

@@ -32,25 +32,11 @@ class CourtControllerTest {
 
     @BeforeEach
     void setUp() {
-        SurfaceType surfaceType1 = new SurfaceType();
-        surfaceType1.setId(1L);
-        surfaceType1.setName("Bricks");
-        surfaceType1.setPricePerMinute(0.5);
+        SurfaceType surfaceType1 = new SurfaceType(1L, "Bricks", 0.5);
 
-        court1 = new Court();
-        court1.setId(1L);
-        court1.setName("Court 1");
-        court1.setSurfaceType(surfaceType1);
-
-        court2 = new Court();
-        court2.setId(2L);
-        court2.setName("Court 2");
-        court2.setSurfaceType(surfaceType1);
-
-        updatedCourt1 = new Court();
-        updatedCourt1.setId(1L);
-        updatedCourt1.setName("Updated Court");
-        updatedCourt1.setSurfaceType(surfaceType1);
+        court1 = new Court(1L, "Court 1", surfaceType1);
+        court2 = new Court(2L, "Court 2", surfaceType1);
+        updatedCourt1 = new Court(1L, "Updated Court", surfaceType1);
     }
 
     @Test

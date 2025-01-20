@@ -15,6 +15,10 @@ public class UserDao implements DataAccessObject<User> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public UserDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public User save(User user) {
         if (user.getId() == null) {

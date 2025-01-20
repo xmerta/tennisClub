@@ -14,6 +14,10 @@ public class SurfaceTypeDao implements DataAccessObject<SurfaceType> {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public SurfaceTypeDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public SurfaceType save(SurfaceType surfaceType) {
         if (surfaceType.getId() == null) {
