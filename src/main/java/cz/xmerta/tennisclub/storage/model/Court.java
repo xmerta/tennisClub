@@ -22,7 +22,6 @@ public class Court extends BaseEntity {
     @JoinColumn(name = "surface_type_id", nullable = false)
     private SurfaceType surfaceType;
 
-    //to be deleted mby
     @OneToMany(mappedBy = "court", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
@@ -31,6 +30,9 @@ public class Court extends BaseEntity {
      */
     protected Court() {}
 
+    /**
+     * Argument constructor for testing and other.
+     */
     public Court(Long id, String name, SurfaceType surfaceType) {
         this.setId(id);
         this.name = name;

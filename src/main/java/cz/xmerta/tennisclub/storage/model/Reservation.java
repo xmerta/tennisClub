@@ -12,9 +12,13 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "reservations")
 public class Reservation extends BaseEntity {
-
+    /**
+     * No-argument constructor for Hibernate.
+     */
     protected Reservation() {}
-
+    /**
+     * Argument constructor for testing and other.
+     */
     public Reservation(Long id, User user, Court court, LocalDateTime startTime, LocalDateTime endTime, GameType gameType, double price) {
         this.setId(id);
         this.user = user;

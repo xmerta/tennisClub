@@ -31,7 +31,9 @@ public class User extends BaseEntity {
      *  For Hibernate purposes.
      */
     protected User() {}
-
+    /**
+     * Argument constructor for testing and other.
+     */
     public User(Long id, String phoneNumber, String name) {
         this.setId(id);
         this.phoneNumber = phoneNumber;

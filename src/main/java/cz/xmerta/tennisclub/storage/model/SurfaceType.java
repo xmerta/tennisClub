@@ -23,9 +23,13 @@ public class SurfaceType extends BaseEntity {
     @Positive(message = "Price per minute must be a positive value.")
     @Column(nullable = false)
     private double pricePerMinute;
-
+    /**
+     * No-argument constructor for Hibernate.
+     */
     protected SurfaceType() {}
-
+    /**
+     * Argument constructor for testing and other.
+     */
     public SurfaceType(Long id, String name, double pricePerMinute) {
         this.setId(id);
         this.name = name;

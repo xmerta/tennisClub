@@ -19,14 +19,23 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
     public SurfaceTypeController(SurfaceTypeService surfaceTypeService) {
         this.surfaceTypeService = surfaceTypeService;
     }
-
+    /**
+     * Retrieves all surface types.
+     *
+     * @return a collection of all surface types in the system.
+     */
     @Override
     @GetMapping
     public ResponseEntity<Collection<SurfaceType>> getAll() {
         Collection<SurfaceType> surfaceTypes = surfaceTypeService.findAll();
         return ResponseEntity.ok(surfaceTypes);
     }
-
+    /**
+     * Retrieves a surface type by its ID.
+     *
+     * @param id the ID of the surface type.
+     * @return the surface type if found, or a 404 NOT FOUND status.
+     */
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<SurfaceType> getById(@PathVariable long id) {
@@ -35,24 +44,32 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
+    /**
+     * Creates a new surface type.
+     *
+     * @param surfaceType the surface type to create.
+     * @return the created surface type or a 400 BAD REQUEST status if invalid
+     */
     @Override
     @PostMapping
     public ResponseEntity<SurfaceType> create(@RequestBody @Valid SurfaceType surfaceType) {
-        if (surfaceType.getId() != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        surfaceType.setId(null);
 
         SurfaceType createdSurfaceType = surfaceTypeService.save(surfaceType);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSurfaceType);
     }
-
+    /**
+     * Updates an existing surface type.
+     *
+     * @param id the ID of the surface type to update.
+     * @param updatedSurfaceType the updated surface type data.
+     * @return the updated surface type
+     * 404 NOT FOUND status if the surface type does not exist
+     * 400 if invalid data
+     */
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<SurfaceType> update(@PathVariable long id, @RequestBody @Valid SurfaceType updatedSurfaceType) {
-        if (updatedSurfaceType.getId() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
 
         Optional<SurfaceType> existingSurfaceType = surfaceTypeService.findById(id);
         if (existingSurfaceType.isPresent()) {
@@ -63,7 +80,12 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+    /**
+     * Deletes a surface type by its ID.
+     *
+     * @param id the ID of the surface type to delete.
+     * @return a 204 NO CONTENT status if the surface type was deleted, or a 404 NOT FOUND status if it does not exist.
+     */
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable long id) {
@@ -75,7 +97,11 @@ public class SurfaceTypeController implements CrudController<SurfaceType> {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+    /**
+     * Deletes all surface types.
+     *
+     * @return a 204 NO CONTENT status after deletion.
+     */
     @Override
     @DeleteMapping
     public ResponseEntity<Void> deleteAll() {

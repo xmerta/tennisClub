@@ -19,15 +19,24 @@ public class CourtController implements CrudController<Court> {
     public CourtController(CourtService courtService) {
         this.courtService = courtService;
     }
-
+    /**
+     * Fetch all courts.
+     *
+     * @return collection of all courts
+     */
     @Override
     @GetMapping
     public ResponseEntity<Collection<Court>> getAll() {
         Collection<Court> courts = courtService.findAll();
         return ResponseEntity.ok(courts);
     }
-
-    @Override
+    /**
+     * Fetch a court by its ID.
+     *
+     * @param id the ID of the court to fetch
+     * @return the court if found, otherwise 404
+     */
+     @Override
     @GetMapping("/{id}")
     public ResponseEntity<Court> getById(@PathVariable long id) {
         Optional<Court> court = courtService.findById(id);
@@ -35,36 +44,47 @@ public class CourtController implements CrudController<Court> {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
+    /**
+     * Create a new court.
+     *
+     * @param court the court to create
+     * @return the created court, or 400 if invalid
+     */
     @Override
     @PostMapping
     public ResponseEntity<Court> create(@Valid @RequestBody Court court) {
-        if (court.getId() != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
+        court.setId(null);
         Court createdCourt = courtService.save(court);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCourt);
     }
-
+    /**
+     * Update an existing court.
+     *
+     * @param id the ID of the court to update, must not be null
+     * @param updatedCourt the updated court details
+     * @return the updated court, or 400/404 if invalid
+     */
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<Court> update(
             @PathVariable long id,
             @Valid @RequestBody Court updatedCourt) {
-        if (updatedCourt.getId() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
         Optional<Court> existingCourt = courtService.findById(id);
+
         if (existingCourt.isPresent()) {
+            updatedCourt.setId(existingCourt.get().getId());
             Court savedCourt = courtService.save(updatedCourt);
             return ResponseEntity.ok(savedCourt);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+    /**
+     * Delete a court by its ID.
+     *
+     * @param id the ID of the court to delete
+     * @return 204 if successfully deleted, 404 if not found
+     */
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable long id) {
@@ -76,7 +96,11 @@ public class CourtController implements CrudController<Court> {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
+    /**
+     * Delete all courts.
+     *
+     * @return 204 when all courts are successfully deleted
+     */
     @Override
     @DeleteMapping
     public ResponseEntity<Void> deleteAll() {
