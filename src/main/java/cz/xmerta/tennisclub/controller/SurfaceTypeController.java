@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+/**
+ * Controller class for SurfaceType, throws 400 if receives BAD REQUEST.
+ */
 @RestController
 @RequestMapping("/api/surfacetypes")
 public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
@@ -28,7 +30,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
     /**
      * Retrieves all surface types.
      *
-     * @return a collection of all surface types in the system.
+     * @return ResponseEntity with   a collection of all surface type DTOs in the system.
      */
     @GetMapping
     public ResponseEntity<Collection<SurfaceTypeDto>> getAll() {
@@ -43,7 +45,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
      * Retrieves a surface type by its ID.
      *
      * @param id the ID of the surface type.
-     * @return the surface type if found, or a 404 NOT FOUND status.
+     * @return ResponseEntity with  the surface type DTO if found, or a 404 NOT FOUND status.
      */
     @Override
     @GetMapping("/{id}")
@@ -59,7 +61,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
      * Creates a new surface type.
      *
      * @param surfaceTypeDto the surface type to create.
-     * @return the created surface type or a 400 BAD REQUEST status if invalid
+     * @return ResponseEntity with  the created surface type as DTO or a 400 BAD REQUEST status if invalid
      */
     @Override
     @PostMapping
@@ -75,7 +77,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
      *
      * @param id                 the ID of the surface type to update.
      * @param updatedSurfaceTypeDto the updated surface type data.
-     * @return the updated surface type
+     * @return ResponseEntity with  the updated surface type DTO
      * 404 NOT FOUND status if the surface type does not exist
      * 400 if invalid data
      */
@@ -97,7 +99,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
      * Deletes a surface type by its ID.
      *
      * @param id the ID of the surface type to delete.
-     * @return a 204 NO CONTENT status if the surface type was deleted, or a 404 NOT FOUND status if it does not exist.
+     * @return ResponseEntity with a 204 NO CONTENT status if the surface type was deleted, or a 404 NOT FOUND status if it does not exist.
      */
     @Override
     @DeleteMapping("/{id}")
@@ -114,7 +116,7 @@ public class SurfaceTypeController implements CrudController<SurfaceTypeDto> {
     /**
      * Deletes all surface types.
      *
-     * @return a 204 NO CONTENT status after deletion.
+     * @return ResponseEntity with a 204 NO CONTENT status after deletion.
      */
     @Override
     @DeleteMapping

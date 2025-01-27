@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+/**
+ * Controller class for Reservation, throws 400 if receives BAD REQUEST.
+ */
 @RestController
 @RequestMapping("/api/reservations")
 public class ReservationController{
@@ -42,7 +44,7 @@ public class ReservationController{
      * Fetch a reservation by its ID.
      *
      * @param id the ID of the reservation to fetch
-     * @return the reservation DTO if found, otherwise 404
+     * @return ResponseEntity with the reservation DTO if found, otherwise 404
      */
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDto> getReservationById(@PathVariable long id) {
@@ -56,7 +58,7 @@ public class ReservationController{
      * Delete a reservation by its ID.
      *
      * @param id the ID of the reservation to delete
-     * @return 204 if successfully deleted, 404 if not found
+     * @return ResponseEntity with the 204 if successfully deleted, 404 if not found
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable long id) {
@@ -69,7 +71,7 @@ public class ReservationController{
     /**
      * Delete all reservations.
      *
-     * @return 204 when all reservations are successfully deleted
+     * @return ResponseEntity with the 204 when all reservations are successfully deleted
      */
     @DeleteMapping
     public ResponseEntity<Void> deleteAllReservations() {
@@ -80,7 +82,7 @@ public class ReservationController{
      * Create a new reservation.
      *
      * @param reservationDto the reservation DTO to create
-     * @return the price of the created reservation, 400 if invalid
+     * @return ResponseEntity with the price of the created reservation, 400 if invalid
      */
     @PostMapping
     public ResponseEntity<Double> createReservation(
@@ -95,7 +97,7 @@ public class ReservationController{
      *
      * @param id the ID of the reservation to update, must not be null
      * @param reservationDto the updated reservation details
-     * @return the price of the updated reservation, or 400/404 if invalid
+     * @return ResponseEntity with the price of the updated reservation, or 400/404 if invalid
      */
     @PutMapping("/{id}")
     public ResponseEntity<Double> updateReservation(
@@ -116,7 +118,7 @@ public class ReservationController{
      * Fetch all reservations for a specific court.
      *
      * @param courtId the ID of the court
-     * @return collection of reservations for the specified court as DTOs
+     * @return ResponseEntity with the collection of reservations for the specified court as DTOs
      */
     @GetMapping("/court/{courtId}")
     public ResponseEntity<Collection<ReservationDto>> getReservationsByCourt(@PathVariable long courtId) {
@@ -131,7 +133,7 @@ public class ReservationController{
      *
      * @param phoneNumber the phone number of the user
      * @param pastReservations flag to include past reservations
-     * @return collection of reservations for the user as DTOs
+     * @return ResponseEntity with collection of reservation for the user as DTOs
      */
     @GetMapping("/user/{phoneNumber}")
     public ResponseEntity<Collection<ReservationDto>> getReservationsByUser(

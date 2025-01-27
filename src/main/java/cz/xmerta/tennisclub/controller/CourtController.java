@@ -13,6 +13,9 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controller class for Court, throws 400 if receives BAD REQUEST.
+ */
 @RestController
 @RequestMapping("/api/courts")
 public class CourtController implements CrudController<CourtDto> {
@@ -26,7 +29,7 @@ public class CourtController implements CrudController<CourtDto> {
     /**
      * Fetch all courts.
      *
-     * @return collection of all courts
+     * @return ResponseEntity with collection of all courts
      */
     @Override
     @GetMapping
@@ -42,7 +45,7 @@ public class CourtController implements CrudController<CourtDto> {
      * Fetch a court by its ID.
      *
      * @param id the ID of the court to fetch
-     * @return the court if found, otherwise 404
+     * @return ResponseEntity with the courtDTO if found, otherwise 404
      */
      @Override
      @GetMapping("/{id}")
@@ -56,7 +59,7 @@ public class CourtController implements CrudController<CourtDto> {
      * Create a new court.
      *
      * @param courtDto the court to create
-     * @return the created court, or 400 if invalid
+     * @return ResponseEntity with the created courtDTO, or 400 if invalid
      */
     @Override
     @PostMapping
@@ -70,7 +73,7 @@ public class CourtController implements CrudController<CourtDto> {
      *
      * @param id the ID of the court to update, must not be null
      * @param updatedCourt the updated court details
-     * @return the updated court, or 400/404 if invalid
+     * @return ResponseEntity with the updated court, or 400/404 if invalid
      */
     @Override
     @PutMapping("/{id}")
@@ -91,7 +94,7 @@ public class CourtController implements CrudController<CourtDto> {
      * Delete a court by its ID.
      *
      * @param id the ID of the court to delete
-     * @return 204 if successfully deleted, 404 if not found
+     * @return ResponseEntity with the 204 if successfully deleted, 404 if not found
      */
     @Override
     @DeleteMapping("/{id}")
@@ -107,7 +110,7 @@ public class CourtController implements CrudController<CourtDto> {
     /**
      * Delete all courts.
      *
-     * @return 204 when all courts are successfully deleted
+     * @return ResponseEntity with the 204 when all courts are successfully deleted
      */
     @Override
     @DeleteMapping
