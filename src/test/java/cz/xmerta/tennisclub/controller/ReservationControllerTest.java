@@ -1,5 +1,7 @@
 package cz.xmerta.tennisclub.controller;
 
+import cz.xmerta.tennisclub.controller.dto.mapper.ReservationDtoMapper;
+import cz.xmerta.tennisclub.service.CourtService;
 import cz.xmerta.tennisclub.service.ReservationService;
 import cz.xmerta.tennisclub.storage.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ReservationController.class)
+@Import(ReservationDtoMapper.class)
 class ReservationControllerTest {
 
     @Autowired
@@ -26,6 +30,8 @@ class ReservationControllerTest {
 
     @MockBean
     private ReservationService reservationService;
+    @MockBean
+    private CourtService courtService;
 
     private Reservation reservation1;
     private Reservation reservation2;
@@ -112,10 +118,12 @@ class ReservationControllerTest {
     @Test
     void create_Ok() throws Exception {
         when(reservationService.save(any(Reservation.class))).thenReturn(reservation1);
+        when(reservationService.getCourtService()).thenReturn(courtService);
+        when(courtService.findById(1L)).thenReturn(Optional.of(reservation1.getCourt()));
 
         mockMvc.perform(post("/api/reservations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": null, \"court\": {\"id\": 1, \"name\": \"Court 1\", \"surfaceType\": {\"id\": 1, \"name\": \"Clay\", \"pricePerMinute\": 0.5}}, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 30.0, \"gameType\": \"SINGLE\"}"))
+                        .content("{\"id\": null, \"courtId\": 1, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 30.0, \"gameType\": \"SINGLE\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(30.0));
 
@@ -136,10 +144,12 @@ class ReservationControllerTest {
     void update_WhenExists() throws Exception {
         when(reservationService.findById(1L)).thenReturn(Optional.of(reservation1));
         when(reservationService.save(any(Reservation.class))).thenReturn(updatedReservation);
+        when(reservationService.getCourtService()).thenReturn(courtService);
+        when(courtService.findById(1L)).thenReturn(Optional.of(reservation1.getCourt()));
 
         mockMvc.perform(put("/api/reservations/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1, \"court\": {\"id\": 1, \"name\": \"Court 1\", \"surfaceType\": {\"id\": 1, \"name\": \"Clay\", \"pricePerMinute\": 0.5}}, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 40.0, \"gameType\": \"SINGLE\"}"))
+                        .content("{\"id\": 1, \"courtId\": 1, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 40.0, \"gameType\": \"SINGLE\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(40.0));
 
@@ -150,10 +160,12 @@ class ReservationControllerTest {
     @Test
     void update_WhenNotExists() throws Exception {
         when(reservationService.findById(1L)).thenReturn(Optional.empty());
+        when(reservationService.getCourtService()).thenReturn(courtService);
+        when(courtService.findById(1L)).thenReturn(Optional.of(reservation1.getCourt()));
 
         mockMvc.perform(put("/api/reservations/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1, \"court\": {\"id\": 1, \"name\": \"Court 1\", \"surfaceType\": {\"id\": 1, \"name\": \"Clay\", \"pricePerMinute\": 0.5}}, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 40.0, \"gameType\": \"SINGLE\"}"))
+                        .content("{\"id\": 1, \"courtId\": 1, \"user\": {\"id\": 1, \"name\": \"John Doe\", \"phoneNumber\": \"+123456789123\"}, \"startTime\": \"2025-01-14T10:00\", \"endTime\": \"2025-01-14T11:00\", \"price\": 40.0, \"gameType\": \"SINGLE\"}"))
                 .andExpect(status().isNotFound());
 
         verify(reservationService, times(1)).findById(1L);
@@ -198,7 +210,7 @@ class ReservationControllerTest {
 
     @Test
     void getReservationsByCourt() throws Exception {
-        when(reservationService.getReservationsByCourt(1L)).thenReturn(Arrays.asList(reservation1, reservation2));
+        when(reservationService.getReservationsByCourtID(1L)).thenReturn(Arrays.asList(reservation1, reservation2));
 
         mockMvc.perform(get("/api/reservations/court/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -209,12 +221,12 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].price").value(25.0));
 
-        verify(reservationService, times(1)).getReservationsByCourt(1L);
+        verify(reservationService, times(1)).getReservationsByCourtID(1L);
     }
 
     @Test
     void getReservationsByUser_Ok() throws Exception {
-        when(reservationService.getUpcomingReservationsByUser("+420123456789"))
+        when(reservationService.getUpcomingReservationsByUserPhoneNumber("+420123456789"))
                 .thenReturn(Arrays.asList(reservation1, reservation2));
 
         mockMvc.perform(get("/api/reservations/user/+420123456789")
@@ -226,12 +238,12 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].price").value(25.0));
 
-        verify(reservationService, times(1)).getUpcomingReservationsByUser("+420123456789");
+        verify(reservationService, times(1)).getUpcomingReservationsByUserPhoneNumber("+420123456789");
     }
 
     @Test
     void getReservationsByUser_UserNotFound() throws Exception {
-        when(reservationService.getUpcomingReservationsByUser("+420123456789"))
+        when(reservationService.getUpcomingReservationsByUserPhoneNumber("+420123456789"))
                 .thenThrow(new IllegalArgumentException("User with phone number +420123456789 not found."));
 
         mockMvc.perform(get("/api/reservations/user/+420123456789")
@@ -239,6 +251,6 @@ class ReservationControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("User with phone number +420123456789 not found."));
 
-        verify(reservationService, times(1)).getUpcomingReservationsByUser("+420123456789");
+        verify(reservationService, times(1)).getUpcomingReservationsByUserPhoneNumber("+420123456789");
     }
 }

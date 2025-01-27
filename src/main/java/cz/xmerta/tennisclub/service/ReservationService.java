@@ -39,18 +39,12 @@ public class ReservationService implements CrudService<Reservation> {
         return reservationDao.save(reservation);
     }
 
-
     private double calculatePrice(Reservation reservation) {
         double basePrice = reservation.getCourt().getSurfaceType().getPricePerMinute();
         double multiplier = reservation.getGameType() == GameType.DOUBLE ? 1.5 : 1.0;
         return basePrice * multiplier * Duration.between(reservation.getStartTime(), reservation.getEndTime()).toMinutes();
     }
 
-    /**
-     *
-     * @param reservation
-     *
-     */
     private void validateReservationTime(Reservation reservation) {
         Collection<Reservation> allReservations = reservationDao.findAll();
 
@@ -106,20 +100,24 @@ public class ReservationService implements CrudService<Reservation> {
         reservationDao.deleteAll();
     }
 
-    public Collection<Reservation> getReservationsByCourt(long courtId) {
+    public Collection<Reservation> getReservationsByCourtID(long courtId) {
         return reservationDao.findByCourtId(courtId);
     }
 
-    public Collection<Reservation> getReservationsByUser(String phoneNumber) {
+    public Collection<Reservation> getReservationsByUserPhoneNumber(String phoneNumber) {
         long userId = userService.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("User with phone number " + phoneNumber + " not found."))
                 .getId();
         return reservationDao.findByUserId(userId);
     }
 
-    public Collection<Reservation> getUpcomingReservationsByUser(String phoneNumber) {
-        return getReservationsByUser(phoneNumber).stream()
+    public Collection<Reservation> getUpcomingReservationsByUserPhoneNumber(String phoneNumber) {
+        return getReservationsByUserPhoneNumber(phoneNumber).stream()
                 .filter(reservation -> reservation.getEndTime().isAfter(LocalDateTime.now()))
                 .collect(Collectors.toList());
+    }
+
+    public CourtService getCourtService() {
+        return courtService;
     }
 }

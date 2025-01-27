@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -23,9 +22,6 @@ public class User extends BaseEntity {
     @Size(min = 3, max = 255, message = "User name must be between 3 and 255 characters.")
     @Column(nullable = false)
     private String name;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Reservation> reservations;
 
     /**
      *  For Hibernate purposes.
@@ -56,11 +52,4 @@ public class User extends BaseEntity {
         this.name = name;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
 }

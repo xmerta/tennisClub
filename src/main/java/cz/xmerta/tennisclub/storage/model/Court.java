@@ -1,12 +1,10 @@
 package cz.xmerta.tennisclub.storage.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-
-import java.util.List;
 
 @Entity
 @Table(name = "courts")
@@ -17,13 +15,11 @@ public class Court extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Valid
     @NotNull
     @ManyToOne
     @JoinColumn(name = "surface_type_id", nullable = false)
     private SurfaceType surfaceType;
-
-    @OneToMany(mappedBy = "court", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Reservation> reservations;
 
     /**
      * No-argument constructor for Hibernate.
@@ -55,11 +51,4 @@ public class Court extends BaseEntity {
         this.surfaceType = surfaceType;
     }
 
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
 }

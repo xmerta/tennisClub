@@ -132,10 +132,10 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getReservationsByCourt_ShouldReturnReservations() {
+    void getReservationsByCourt_ShouldReturnReservationsID() {
         when(reservationDao.findByCourtId(1L)).thenReturn(Arrays.asList(reservation1, reservation2));
 
-        Collection<Reservation> reservations = reservationService.getReservationsByCourt(1L);
+        Collection<Reservation> reservations = reservationService.getReservationsByCourtID(1L);
 
         assertThat(reservations).hasSize(2);
         verify(reservationDao, times(1)).findByCourtId(1L);
@@ -160,11 +160,11 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getReservationsByUser_WhenUserExists() {
+    void getReservationsByUser_WhenUserPhoneNumberExists() {
         when(userService.findByPhoneNumber(user.getPhoneNumber())).thenReturn(Optional.of(user));
         when(reservationDao.findByUserId(user.getId())).thenReturn(Arrays.asList(reservation1, reservation2));
 
-        Collection<Reservation> reservations = reservationService.getReservationsByUser(user.getPhoneNumber());
+        Collection<Reservation> reservations = reservationService.getReservationsByUserPhoneNumber(user.getPhoneNumber());
 
         assertThat(reservations).hasSize(2);
         assertThat(reservations).extracting(Reservation::getId).containsExactlyInAnyOrder(1L, 2L);
@@ -173,10 +173,10 @@ class ReservationServiceTest {
     }
 
     @Test
-    void getReservationsByCourt_WhenCourtExists() {
+    void getReservationsByCourt_WhenCourtIDExists() {
         when(reservationDao.findByCourtId(court.getId())).thenReturn(Arrays.asList(reservation1, reservation2));
 
-        Collection<Reservation> reservations = reservationService.getReservationsByCourt(court.getId());
+        Collection<Reservation> reservations = reservationService.getReservationsByCourtID(court.getId());
 
         assertThat(reservations).hasSize(2);
         assertThat(reservations).extracting(Reservation::getId).containsExactlyInAnyOrder(1L, 2L);

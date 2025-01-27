@@ -1,0 +1,18 @@
+curl -X POST -H "Content-Type: application/json" http://localhost:8080/api/reservations -d '{
+  "courtId": 1,
+  "user": {
+    "name": "Patrick",
+    "phoneNumber": "+420123456789"
+  },
+  "startTime": "2025-01-30T10:00:00",
+  "endTime": "2025-01-30T11:00:00",
+  "gameType": "SINGLE",
+  "price": 5.0
+}'
+
+curl -X POST http://localhost:8080/acourts -H -H "Content-Type: application/json" -d '{
+  "name": "Court 69",
+  "surfaceTypeId": 8
+}'
+
+

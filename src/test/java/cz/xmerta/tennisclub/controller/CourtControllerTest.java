@@ -1,6 +1,8 @@
 package cz.xmerta.tennisclub.controller;
 
+import cz.xmerta.tennisclub.controller.dto.mapper.CourtDtoMapper;
 import cz.xmerta.tennisclub.service.CourtService;
+import cz.xmerta.tennisclub.service.SurfaceTypeService;
 import cz.xmerta.tennisclub.storage.model.Court;
 import cz.xmerta.tennisclub.storage.model.SurfaceType;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,12 +22,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CourtController.class)
+@Import(CourtDtoMapper.class)
 class CourtControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private CourtService courtService;
+    @MockBean
+    private SurfaceTypeService surfaceTypeService;
 
     private Court court1;
     private Court court2;
@@ -32,6 +38,7 @@ class CourtControllerTest {
 
     @BeforeEach
     void setUp() {
+
         SurfaceType surfaceType1 = new SurfaceType(1L, "Bricks", 0.5);
 
         court1 = new Court(1L, "Court 1", surfaceType1);
@@ -82,10 +89,12 @@ class CourtControllerTest {
     @Test
     void create_Ok() throws Exception {
         when(courtService.save(any(Court.class))).thenReturn(court1);
+        when(courtService.getSurfaceTypeService()).thenReturn(surfaceTypeService);
+        when(surfaceTypeService.findById(1L)).thenReturn(Optional.of(court1.getSurfaceType()));
 
         mockMvc.perform(post("/api/courts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Court 1\", \"surfaceType\": {\"id\": 1}}"))
+                        .content("{\"name\": \"Court 1\", \"surfaceTypeId\": 1}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Court 1"));
@@ -109,10 +118,12 @@ class CourtControllerTest {
     void update_WhenExists() throws Exception {
         when(courtService.findById(1L)).thenReturn(Optional.of(court1));
         when(courtService.save(any(Court.class))).thenReturn(updatedCourt1);
+        when(courtService.getSurfaceTypeService()).thenReturn(surfaceTypeService);
+        when(surfaceTypeService.findById(1L)).thenReturn(Optional.of(court1.getSurfaceType()));
 
         mockMvc.perform(put("/api/courts/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1, \"name\": \"Updated Court\", \"surfaceType\": {\"id\": 1}}"))
+                        .content("{\"id\": 1, \"name\": \"Updated Court\", \"surfaceTypeId\": 1}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("Updated Court"));
@@ -141,7 +152,7 @@ class CourtControllerTest {
 
         mockMvc.perform(put("/api/courts/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1, \"name\": \"Updated Court\", \"surfaceType\": {\"id\": 1}}"))
+                        .content("{\"id\": 1, \"name\": \"Updated Court\", \"surfaceTypeId\": 1}"))
                 .andExpect(status().isNotFound());
 
         verify(courtService, times(1)).findById(1L);

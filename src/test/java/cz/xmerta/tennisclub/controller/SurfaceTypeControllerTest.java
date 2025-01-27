@@ -2,11 +2,13 @@ package cz.xmerta.tennisclub.controller;
 
 import cz.xmerta.tennisclub.service.SurfaceTypeService;
 import cz.xmerta.tennisclub.storage.model.SurfaceType;
+import cz.xmerta.tennisclub.controller.dto.mapper.SurfaceTypeDtoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SurfaceTypeController.class)
+@Import(SurfaceTypeDtoMapper.class)
 class SurfaceTypeControllerTest {
 
     @Autowired

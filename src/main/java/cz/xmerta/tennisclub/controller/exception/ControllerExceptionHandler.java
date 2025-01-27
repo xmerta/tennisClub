@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ControllerExceptionHandler {
     /**
-     * Occurs in service or controller logic.
+     * Handles IllegalArgumentException which occurs in service or controller logic.
      *
      * @param e the thrown IllegalArgumentException
      * @return a ResponseEntity with HTTP 400 status and  message

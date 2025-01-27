@@ -1,5 +1,7 @@
 package cz.xmerta.tennisclub.controller;
 
+import cz.xmerta.tennisclub.controller.dto.CourtDto;
+import cz.xmerta.tennisclub.controller.dto.mapper.CourtDtoMapper;
 import cz.xmerta.tennisclub.service.CourtService;
 import cz.xmerta.tennisclub.storage.model.Court;
 import jakarta.validation.Valid;
@@ -9,15 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/courts")
-public class CourtController implements CrudController<Court> {
+public class CourtController implements CrudController<CourtDto> {
 
     private final CourtService courtService;
-
-    public CourtController(CourtService courtService) {
+    private final CourtDtoMapper courtDtoMapper;
+    public CourtController(CourtService courtService, CourtDtoMapper courtDtoMapper) {
         this.courtService = courtService;
+        this.courtDtoMapper = courtDtoMapper;
     }
     /**
      * Fetch all courts.
@@ -26,10 +30,14 @@ public class CourtController implements CrudController<Court> {
      */
     @Override
     @GetMapping
-    public ResponseEntity<Collection<Court>> getAll() {
-        Collection<Court> courts = courtService.findAll();
+    public ResponseEntity<Collection<CourtDto>> getAll() {
+        Collection<CourtDto> courts = courtService.findAll()
+                .stream()
+                .map(courtDtoMapper::toDTO)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(courts);
     }
+
     /**
      * Fetch a court by its ID.
      *
@@ -37,25 +45,25 @@ public class CourtController implements CrudController<Court> {
      * @return the court if found, otherwise 404
      */
      @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<Court> getById(@PathVariable long id) {
-        Optional<Court> court = courtService.findById(id);
-        return court
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
+     @GetMapping("/{id}")
+     public ResponseEntity<CourtDto> getById(@PathVariable long id) {
+         Optional<CourtDto> courtDto = courtService.findById(id)
+                 .map(courtDtoMapper::toDTO);
+         return courtDto.map(ResponseEntity::ok)
+                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+     }
     /**
      * Create a new court.
      *
-     * @param court the court to create
+     * @param courtDto the court to create
      * @return the created court, or 400 if invalid
      */
     @Override
     @PostMapping
-    public ResponseEntity<Court> create(@Valid @RequestBody Court court) {
-        court.setId(null);
-        Court createdCourt = courtService.save(court);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCourt);
+    public ResponseEntity<CourtDto> create(@RequestBody @Valid CourtDto courtDto) {
+        courtDto.setId(null);
+        Court createdCourt = courtService.save(courtDtoMapper.toEntity(courtDto, courtService.getSurfaceTypeService()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(courtDtoMapper.toDTO(createdCourt));
     }
     /**
      * Update an existing court.
@@ -66,15 +74,15 @@ public class CourtController implements CrudController<Court> {
      */
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<Court> update(
+    public ResponseEntity<CourtDto> update(
             @PathVariable long id,
-            @Valid @RequestBody Court updatedCourt) {
+            @Valid @RequestBody CourtDto updatedCourt) {
         Optional<Court> existingCourt = courtService.findById(id);
 
         if (existingCourt.isPresent()) {
             updatedCourt.setId(existingCourt.get().getId());
-            Court savedCourt = courtService.save(updatedCourt);
-            return ResponseEntity.ok(savedCourt);
+            var savedCourt = courtService.save(courtDtoMapper.toEntity(updatedCourt, courtService.getSurfaceTypeService()));
+            return ResponseEntity.ok(courtDtoMapper.toDTO(savedCourt));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

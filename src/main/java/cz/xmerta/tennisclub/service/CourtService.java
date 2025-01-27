@@ -56,4 +56,8 @@ public class CourtService implements CrudService<Court> {
     public void deleteAll() {
         courtDao.deleteAll();
     }
+
+    public SurfaceTypeService getSurfaceTypeService() {
+        return surfaceTypeService;
+    }
 }
